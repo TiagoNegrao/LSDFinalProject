@@ -27,11 +27,11 @@ architecture Behav of BIN2BCD is
 	--definição do valor a tomar pela saída indicadora do sinal
 	sinal <= '1' when ((N = 16 and input(15) = '1') or (N = 8 and input(7) = '1')) else '0';
 	
-	s_uni <= std_logic_vector(s_input rem 10)(4 downto 0);
-	s_dec <= std_logic_vector((s_input / 10) rem 10)(4 downto 0);
-	s_cen <= std_logic_vector((s_input / 100) rem 10)(4 downto 0);
-	s_mil <= std_logic_vector((s_input / 1000) rem 10 )(4 downto 0);
-	s_cenmil <= std_logic_vector((s_input / 10000) rem 10)(4 downto 0);
+	s_uni <= std_logic_vector(s_input rem 10);
+	s_dec <= std_logic_vector((s_input / 10) rem 10);
+	s_cen <= std_logic_vector((s_input / 100) rem 10);
+	s_mil <= std_logic_vector((s_input / 1000) rem 10 );
+	s_cenmil <= std_logic_vector((s_input / 10000) rem 10);
 	
 	uniOut <= "10000" when (enable = '0') else s_uni;
 	decOut <="10000" when (enable = '0') else s_dec;

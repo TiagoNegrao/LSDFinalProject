@@ -17,11 +17,11 @@ entity MaqCalcular_Fase1 is
 end MaqCalcular_Fase1;
 
 architecture Struct of MaqCalcular_Fase1 is
-	signal resultado : std_logic_vector(15 downto 0);
+	signal resultado, s_sumsub_Res : std_logic_vector(15 downto 0);
 	signal s_uni, s_dec, s_cen, s_mil, s_cenmil, s_sinal : std_logic_vector(4 downto 0);
 	signal s_operation : std_logic_vector(3 downto 0);
-	signal indSinal, s_startOperation : std_logic;
-	signal s_indOperation : std_logic_vector(2 downto 0);
+	signal indSinal, s_startOperation, s_sumsub : std_logic;
+	signal s_selection : std_logic_vector(2 downto 0);
 	begin
 			Debounce0 : entity work.Debouncer(fancy)
 				port map(clock => CLOCK_50,
@@ -48,28 +48,33 @@ architecture Struct of MaqCalcular_Fase1 is
 							dirty => KEY(3),
 							clean=> s_operation(3));
 			
-			ControlPath : entity work.ControlPath(Struct)
-				port map(clk => CLOCK_50,
-									reset => SW(17),
-									start => SW(16),
-									INPUT => s_operation,
-									opComplete => LEDG(0),
-									en_OPC => s_startOperation);
 			
 			Calculador: entity work.Calcular(Struct)
 				port map(clk => CLOCK_50,
-								  reset => SW(17),
-								  start => s_startOperation,
-								  op1 => SW(15 downto 8), 
-								  op2 => SW(7 downto 0),
-								  operation => s_operation,
-								  res => resultado(7 downto 0),
-								  hi_res => resultado(15 downto 8),
-								  overflow => LEDR(0));
-									
+							  start => SW(16),
+							  operation => s_operation,
+							  en_SumSub => s_sumsub,
+							  --en_MultDiv : out std_logic;
+							  s_operation => s_selection);
+						
+			SumSub : entity work.SumSub(Algorithm)
+				port map(clk => CLOCK_50,
+						  sum_or_sub => s_sumsub,
+						  operand0 => SW(15 downto 8),
+						  operand1 => SW(7 downto 0),
+						  result => s_sumsub_Res,
+						  overflow => LEDR(0));
+						  
+			OpMux : entity work.OpMux(Struct)
+				port map(selection_Op => s_selection,
+						  res_SumSub => s_sumsub_Res,
+						  --res_MultDiv : in std_logic_vector(15 downto 0);
+						  res => resultado);
+						  --remain : out std_logic_vector(7 downto 0)
+			
 			BIN2BCD : entity work.BIN2BCD(Behav)
 				port map(enable => SW(16),
-									 input => resultado(7 downto 0),
+									 input => resultado,
 									 uniOut => s_uni,
 									 decOut =>s_dec,
 									 cenOut =>s_cen,
