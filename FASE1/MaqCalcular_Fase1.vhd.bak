@@ -17,8 +17,7 @@ entity MaqCalcular_Fase1 is
 end MaqCalcular_Fase1;
 
 architecture Struct of MaqCalcular_Fase1 is
-	signal resultado, s_sumsub_Res, s_mult_Res, s_Raiz_Res  : std_logic_vector(15 downto 0);
-	signal s_div_D, s_div_R : std_logic_vector(7 downto 0);
+	signal resultado, s_sumsub_Res, s_mult_Res, s_Raiz_Res : std_logic_vector(15 downto 0);
 	signal s_uni, s_dec, s_cen, s_mil, s_cenmil, s_sinal : std_logic_vector(4 downto 0);
 	signal s_operation : std_logic_vector(3 downto 0);
 	signal indSinal, s_startOperation, s_sumsub, s_mult: std_logic;
@@ -52,7 +51,7 @@ architecture Struct of MaqCalcular_Fase1 is
 						
 			SumSub : entity work.SumSub(Algorithm)
 				port map(clk => CLOCK_50,
-						  sum => s_operation(0),
+						  sum =>  Key(0),
 						  operand0 => SW(15 downto 8),
 						  operand1 => SW(7 downto 0),
 						  result => s_sumsub_Res,
@@ -60,25 +59,17 @@ architecture Struct of MaqCalcular_Fase1 is
 						  
 			MultData : entity work.MultData(Behav)
 				port map(clk => CLOCK_50,
-							start	=>  s_operation(2),
+							start	=>  KEY(2),
 							operando1 => SW(15 downto 8),
 							operando2 => SW(7 downto 0),
 							result => s_mult_Res,
-							done => LEDR(3));	
-			
-			IterDiv : entity work.IterDiv(Structural)
-				port map(CLOCK_50 => CLOCK_50,
-						  KEY => s_operation(3),
-						  SW => SW,
-						  LEDR => LEDR(2),
-						  D => s_div_D,
-						  R => s_div_R);
+							done => LEDG(1));	
 			
 			Raiz : entity work.Raiz(Behav)
 				port map(clk => CLOCK_50,
 							start => SW(16),
 							reset => '0',
-							operando => SW(7 downto 0),
+							operando => SW(15 downto 0),
 							result => s_raiz_Res);
 							
 						  
@@ -88,10 +79,8 @@ architecture Struct of MaqCalcular_Fase1 is
 						  res_SumSub => s_sumsub_Res,
 						  res_Mult => s_mult_Res,
 						  res_Raiz => s_raiz_Res,
-						  res_D => "00000000" & s_div_D,
-						  res_R => s_div_R,
-						  res => resultado,
-						  remain => LEDG);
+						  res => resultado);
+						  --remain : out std_logic_vector(7 downto 0)
 						  
 			
 			BIN2BCD : entity work.BIN2BCD(Behav)
