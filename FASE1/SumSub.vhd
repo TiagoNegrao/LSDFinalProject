@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 entity SumSub is
 	port(clk : in std_logic;
-		  sum_or_sub : in std_logic;
+		  sum : in std_logic;
 		  operand0 : in std_logic_vector(7 downto 0);
 		  operand1 : in std_logic_vector(7 downto 0);
 		  result : out std_logic_vector(15 downto 0);
@@ -17,7 +17,7 @@ architecture Algorithm of SumSub is
 begin
 
 	s_op0 <= signed(operand0);
-	s_op1 <= not signed(operand1) + 1 when (sum_or_sub = '1') else signed(operand1);
+	s_op1 <= not signed(operand1) + 1 when (sum = '1') else signed(operand1);
 
 	process(clk)
 	begin
@@ -31,10 +31,10 @@ begin
 				overflow <= '0';
 			end if;
 			
-			if(s_result(7) = '1') then
-				s_result(15 downto 8) <= (others => '1');
-			else
+			if(s_result(7) = '0') then
 				s_result(15 downto 8) <= (others => '0');
+			else
+				s_result(15 downto 8) <= (others => '1');
 			end if;
 			
 		end if;

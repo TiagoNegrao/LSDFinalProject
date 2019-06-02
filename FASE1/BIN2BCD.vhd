@@ -16,6 +16,7 @@ entity BIN2BCD is
 end BIN2BCD;
 
 architecture Behav of BIN2BCD is
+	signal s_u, s_d, s_c, s_m, s_cm : std_logic_vector(15 downto 0);
 	signal s_uni, s_dec, s_cen, s_mil, s_cenmil : std_logic_vector(4 downto 0);
 	signal s_input : unsigned(N-1 downto 0);
 	
@@ -27,11 +28,17 @@ architecture Behav of BIN2BCD is
 	--definição do valor a tomar pela saída indicadora do sinal
 	sinal <= '1' when ((N = 16 and input(15) = '1') or (N = 8 and input(7) = '1')) else '0';
 	
-	s_uni <= std_logic_vector(s_input rem 10);
-	s_dec <= std_logic_vector((s_input / 10) rem 10);
-	s_cen <= std_logic_vector((s_input / 100) rem 10);
-	s_mil <= std_logic_vector((s_input / 1000) rem 10 );
-	s_cenmil <= std_logic_vector((s_input / 10000) rem 10);
+	s_u <= std_logic_vector(s_input rem 10);
+	s_d <= std_logic_vector((s_input / 10) rem 10);
+	s_c <= std_logic_vector((s_input / 100) rem 10);
+	s_m <= std_logic_vector((s_input / 1000) rem 10);
+	s_cm <= std_logic_vector((s_input / 10000) rem 10);
+
+	s_uni <= s_u(4 downto 0);
+	s_dec <= s_d(4 downto 0);
+	s_cen <= s_c(4 downto 0);
+	s_mil <= s_m(4 downto 0);
+	s_cenmil <= s_cm(4 downto 0);
 	
 	uniOut <= "10000" when (enable = '0') else s_uni;
 	decOut <="10000" when (enable = '0') else s_dec;

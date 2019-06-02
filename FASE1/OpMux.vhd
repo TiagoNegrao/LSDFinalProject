@@ -2,9 +2,11 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 
 entity OpMux is
-	port(selection_Op : in std_logic_vector(2 downto 0);
+	port(selection_Op : in std_logic_vector(3 downto 0);
+		  raiz : in std_logic;
 		  res_SumSub : in std_logic_vector(15 downto 0);
-		  --res_MultDiv : in std_logic_vector(15 downto 0);
+		  res_Mult : in std_logic_vector(15 downto 0);
+		  res_Raiz : in std_logic_vector(15 downto 0);
 		  res : out std_logic_vector(15 downto 0));
 		  --remain : out std_logic_vector(7 downto 0));
 end OpMux;
@@ -12,26 +14,30 @@ end OpMux;
 architecture Struct of OpMux is
 
 begin
-	process(selection_Op)
+	process(selection_Op, res_SumSub, res_Mult, res_Raiz)
 	begin
 	
+	if(raiz = '0') then
 		case selection_Op is
-		when "000" | "001" =>
+		when "1110" | "1101" =>
 			res <= res_SumSub;
 			--remain <= (others => '0');
 		
-		--when "010" =>
-			--res <= res_MultDiv;
+		when "1011" =>
+			res <= res_Mult;
 			--remain <= (others => '0');
 		
 		--when "011" =>
-			--res <= "00000000" & res_MultDiv(7 downto 0);
-			--remain <= res_MultDiv(15 downto 8);*/
+			--res <= ;
+			--remain <= */
 		
 		when others =>
-			res <= res_SumSub;
+			res <= (others => '0');
 			--remain <= (others => '0');
 		
 		end case;
+	else
+		res <= res_Raiz;
+	end if;
 	end process;
 end Struct;

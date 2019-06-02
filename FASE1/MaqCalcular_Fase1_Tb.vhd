@@ -60,18 +60,22 @@ begin
 		wait for 20 ns;
 		s_SW(15 downto 8) <= "00001000";
 		s_SW(7 downto 0) <= "00000011";
-		s_KEY(1) <= '0';
+		s_KEY(2) <= '0';
 		
-		wait for 10 ns;
-		s_KEY(1) <= '1';
+		wait for 60 ns;
+		s_KEY(2) <= '1';
 		
 		s_SW(15 downto 8) <= X"FF";
 		s_SW(7 downto 0) <= X"FF";
 		
-		wait for 25 ns;
-		s_KEY(0) <= '0';
-		wait for 10 ns;
-		s_KEY(0) <= '1';
+		wait for 60 ns;
+		s_KEY <= "1011";
+		
+		wait for 60 ns;
+		s_KEY <= "1111";
+		
+		s_SW(15 downto 0) <= x"0004";
+		s_SW(16) <= '1';
 		
 		wait for 125 ns;
 	end process;
